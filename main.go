@@ -10,13 +10,14 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"portaudio"
 	"strconv"
 
+	"github.com/gordonklaus/portaudio"
 	"github.com/labstack/echo"
 )
 
 var (
+	port                         = flag.String("port", ":1323", "Port to host on.")
 	ffmpegCommand                []string
 	encoderReader, encoderWriter = io.Pipe()
 	streamReader, streamWriter   = io.Pipe()
@@ -162,5 +163,5 @@ func main() {
 	e.GET("/", func(c echo.Context) error {
 		return c.Stream(http.StatusOK, "audio/aac", streamReader)
 	})
-	e.Logger.Fatal(e.Start(":1323"))
+	e.Logger.Fatal(e.Start(*port))
 }
